@@ -1,10 +1,16 @@
-spring:
-application:
- name:BankMsUser
-datasource:
-  url:jdbc:mysql://localhost:3306/mysql
-  password:root
-  username:root
-  driver-class-name:com.mysql.cj.jdbc.Driver
-server:
-  port:4444
+ spring:
+  application:
+   name: BankMsUser
+  datasource:
+   url: jdbc:mysql://localhost:3306/foo_fighters
+   password: root
+   username: root
+   driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+   show-sql: true
+  liquibase:
+   change-log: classpath:/liquibase/changelog-master.yml
+   enabled: true
+
+ server:
+  port: 4444
