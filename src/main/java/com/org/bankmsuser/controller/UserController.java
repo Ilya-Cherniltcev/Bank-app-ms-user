@@ -1,12 +1,15 @@
 package com.org.bankmsuser.controller;
 
 import com.org.bankmsuser.dto.UserDto;
+import com.org.bankmsuser.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -15,15 +18,15 @@ public class UserController {
 
     private final UserService userService;
 
-        // получаю юзера по айди
+    // получаю юзера по айди
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id){
-            return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     //создаю юзера
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
         Long userId = userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(userId);
     }
@@ -40,14 +43,14 @@ public class UserController {
         return ResponseEntity.ok(userService.partialUpdateUser(id, updates));
     }
 
-    // удаляю пользователя
+    // удаляю юзера
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // получаю список всех пользователей
+    // получаю список всех юзеров
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(userService.getAllUsers(page, size));
@@ -59,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByPhone(phone));
     }
 
-    // фильтрую по дате рождения
+    // фильтрую по дате рождения(надо ли?)
     @GetMapping("/filter")
     public ResponseEntity<List<UserDto>> filterUsersByDate(@RequestParam LocalDate from, @RequestParam LocalDate to) {
         return ResponseEntity.ok(userService.filterUsersByDate(from, to));
@@ -71,25 +74,9 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
     }
 
-    // История изменений
-    @GetMapping("/{id}/history")
-    public ResponseEntity<List<UserHistoryDto>> getUserHistory(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserHistory(id));
-    }
-
     // проверяю паспорт
     @PatchMapping("/{id}/verify-passport")
     public ResponseEntity<UserDto> verifyPassport(@PathVariable Long id) {
         return ResponseEntity.ok(userService.verifyPassport(id));
     }
-}
-
-
-
-
-
-
-
-
-
 }
