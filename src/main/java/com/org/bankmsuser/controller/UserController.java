@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByPhone(phone));
     }
 
-    // фильтрую по дате рождения(надо ли?)
+    // фильтрую юзеров по дате рождения(надо ли?)
     @GetMapping("/filter")
     public ResponseEntity<List<UserDto>> filterUsersByDate(@RequestParam LocalDate from, @RequestParam LocalDate to) {
         return ResponseEntity.ok(userService.filterUsersByDate(from, to));
