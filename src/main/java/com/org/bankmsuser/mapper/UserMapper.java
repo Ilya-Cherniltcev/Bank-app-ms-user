@@ -1,5 +1,6 @@
 package com.org.bankmsuser.mapper;
 
+import com.org.bankmsuser.dto.UserCreateDto;
 import com.org.bankmsuser.dto.UserDto;
 import com.org.bankmsuser.entity.User;
 import org.mapstruct.Mapper;
@@ -11,4 +12,6 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     User toUserEntity(UserDto userDto);
+    User toUserEntity(UserCreateDto userCreateDto);
+    UserDto toUserDto(User user);
 }
