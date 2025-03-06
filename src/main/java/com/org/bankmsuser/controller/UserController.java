@@ -1,6 +1,8 @@
 package com.org.bankmsuser.controller;
 
+import com.org.bankmsuser.dto.UserCreateDto;
 import com.org.bankmsuser.dto.UserDto;
+import com.org.bankmsuser.entity.User;
 import com.org.bankmsuser.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,20 +23,23 @@ public class UserController {
     // получаю юзера по айди
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        UserDto userDto = userService.getUserById(id);
+        if (userDto == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(userDto);
     }
 
     //создаю юзера
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        Long userId = userService.createUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userId);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userCreateDto));
     }
 
     // обновляю юзера (PUT - для всех полей)
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.updateUser(id, userDto));
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserCreateDto userCreateDto) {
+        return ResponseEntity.ok(userService.updateUser(id, userCreateDto));
     }
 
     // обновляю частично (PATCH - только переданные поля)
@@ -45,9 +50,9 @@ public class UserController {
 
     // удаляю юзера
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // получаю список всех юзеров
@@ -69,14 +74,15 @@ public class UserController {
     }
 
     // обновляю номер телефона
+    // МНЕ КАЖЕТСЯ - ЭТО ИЗБЫТОЧНО (есть метод patch выше)
     @PatchMapping("/{id}/phone")
     public ResponseEntity<UserDto> updatePhoneNumber(@PathVariable Long id, @RequestParam String phone) {
         return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
     }
 
-    // проверяю паспорт
-    @PatchMapping("/{id}/verify-passport")
-    public ResponseEntity<UserDto> verifyPassport(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.verifyPassport(id));
+    // получаем пользователя по паспорту
+    @PatchMapping("/{id}/by-passport")
+    public ResponseEntity<UserDto> getUserByPassport(@PathVariable String passport) {
+        return ResponseEntity.ok(userService.getByPassport(passport));
     }
 }
