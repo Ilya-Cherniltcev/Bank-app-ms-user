@@ -15,35 +15,5 @@ import java.util.Map;
 public class UserService {
     private final UserMapper userMapper;
 
-    public Long createUser(UserDto userDto) {
-    }
 
-    public UserDto getUserById(Long id) {
-    }
-
-    public UserDto updateUser(Long id, UserDto userDto) {
-    }
-
-    public UserDto partialUpdateUser(Long id, Map<String, Object> updates) {
-    }
-
-    public void deleteUser(Long id) {
-
-    }
-
-    public List<UserDto> getAllUsers(int page, int size) {
-    }
-
-    public UserDto getUserByPhone(String phone) {
-    }
-
-    public List<UserDto> filterUsersByDate(LocalDate from, LocalDate to) {
-    }
-
-    public UserDto updatePhoneNumber(Long id, String phone) {
-    }
-
-
-    public UserDto verifyPassport(Long id) {
-    }
 }
