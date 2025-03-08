@@ -97,6 +97,9 @@ public class UserService {
     }
 
     public List<UserDto> filterUsersByDate(LocalDate from, LocalDate to) {
+        return userMapper.toUserDtoList(
+                userRepository.findByRegistrationDateBetween(from, to)
+        );
     }
 
     public UserDto updatePhoneNumber(Long id, String phone) {
