@@ -7,6 +7,7 @@ import com.org.bankmsuser.exception.UserNotFoundException;
 import com.org.bankmsuser.mapper.UserMapper;
 import com.org.bankmsuser.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -87,6 +88,9 @@ public class UserService {
     }
 
     public List<UserDto> getAllUsers(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size))
+                .map(userMapper::toUserDto)
+                .getContent();
     }
 
     public UserDto getUserByPhone(String phone) {
@@ -113,5 +117,5 @@ public class UserService {
         }
         return userMapper.toUserDto(user);
     }
->>>>>>> upstream/main
+>>>>>>>
 }
