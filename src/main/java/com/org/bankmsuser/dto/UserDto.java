@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,7 +13,7 @@ public class UserDto {
     @NotBlank
     private String name;
     @Past
-    private LocalDateTime dateOfBirth;
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$")
+    private LocalDate dateOfBirth;
+    @Pattern(regexp = "^\\+?[0-9]{4,15}$")
     private String phoneNumber;
 }
