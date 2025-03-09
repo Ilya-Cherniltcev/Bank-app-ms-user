@@ -75,10 +75,10 @@ public class UserController {
 
     // обновляю номер телефона
     // МНЕ КАЖЕТСЯ - ЭТО ИЗБЫТОЧНО (есть метод patch выше)
-    @PatchMapping("/{id}/phone")
-    public ResponseEntity<UserDto> updatePhoneNumber(@PathVariable Long id, @RequestParam String phone) {
-        return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
-    }
+//    @PatchMapping("/{id}/phone")
+//    public ResponseEntity<UserDto> updatePhoneNumber(@PathVariable Long id, @RequestParam String phone) {
+//        return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
+//    }
 
     // получаем пользователя по паспорту
     @PatchMapping("/{id}/by-passport")
