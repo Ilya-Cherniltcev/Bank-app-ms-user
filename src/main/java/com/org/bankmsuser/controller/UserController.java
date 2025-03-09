@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +24,7 @@ public class UserController {
     // получаю юзера по айди
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        UserDto userDto = userService.getUserById(id);
-        if (userDto == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     //создаю юзера
@@ -38,15 +35,13 @@ public class UserController {
 
     // обновляю юзера (PUT - для всех полей)
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserCreateDto userCreateDto) {
-        return ResponseEntity.ok(userService.updateUser(id, userCreateDto));
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id,
+                                              @RequestParam(value = "name", required = false) String name,
+                                              @RequestParam(value = "passport", required = false) String passport,
+                                              @RequestParam(value = "phoneNumber", required = false) String phoneNumber) {
+        return ResponseEntity.ok(userService.updateUser(id, name, passport, phoneNumber));
     }
 
-    // обновляю частично (PATCH - только переданные поля)
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDto> partialUpdateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        return ResponseEntity.ok(userService.partialUpdateUser(id, updates));
-    }
 
     // удаляю юзера
     @DeleteMapping("/{id}")
@@ -57,32 +52,39 @@ public class UserController {
 
     // получаю список всех юзеров
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(userService.getAllUsers(page, size));
     }
 
     // поиск по номеру телефона
-    @GetMapping("/by-phone")
-    public ResponseEntity<UserDto> getUserByPhone(@RequestParam String phone) {
-        return ResponseEntity.ok(userService.getUserByPhone(phone));
+    @GetMapping("/phone/{phoneNumber}")
+    public ResponseEntity<UserDto> getUserByPhone(@RequestParam(name = "phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok(userService.getUserByPhone(phoneNumber));
     }
 
-    // фильтрую юзеров по дате рождения(надо ли?)
-    @GetMapping("/filter")
-    public ResponseEntity<List<UserDto>> filterUsersByDate(@RequestParam LocalDate from, @RequestParam LocalDate to) {
+    // фильтрую юзеров по дате-времени занесения в бд
+    @GetMapping("/filter/by-reg-date/")
+    public ResponseEntity<List<UserDto>> filterUsersByDateOfRegistration(@RequestParam(name = "dateTimeFrom") LocalDateTime from, @RequestParam(name = "dateTimeTo") LocalDateTime to) {
         return ResponseEntity.ok(userService.filterUsersByDate(from, to));
     }
 
-    // обновляю номер телефона
-    // МНЕ КАЖЕТСЯ - ЭТО ИЗБЫТОЧНО (есть метод patch выше)
-//    @PatchMapping("/{id}/phone")
-//    public ResponseEntity<UserDto> updatePhoneNumber(@PathVariable Long id, @RequestParam String phone) {
-//        return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
-//    }
+
+    // находим юзеров по части номера паспорта
+    @GetMapping("/filter/by-passport/{passportMask}")
+    public ResponseEntity<List<UserCreateDto>> findUsersByPassportMask(@PathVariable String passportMask) {
+        return ResponseEntity.ok(userService.findUsersByPassportMask(passportMask));
+    }
+
+    // находим юзеров по части номера телефона
+    @GetMapping("/filter/by-phone/{phoneMask}")
+    public ResponseEntity<List<UserDto>> findUsersByPhoneMask(@PathVariable String phoneMask) {
+        return ResponseEntity.ok(userService.findUsersByPhoneMask(phoneMask));
+    }
+
 
     // получаем пользователя по паспорту
-    @PatchMapping("/{id}/by-passport")
-    public ResponseEntity<UserDto> getUserByPassport(@PathVariable String passport) {
-        return ResponseEntity.ok(userService.getByPassport(passport));
+    @GetMapping("/passport/{passportNumber}")
+    public ResponseEntity<UserDto> getUserByPassport(@PathVariable String passportNumber) {
+        return ResponseEntity.ok(userService.getByPassport(passportNumber));
     }
 }
