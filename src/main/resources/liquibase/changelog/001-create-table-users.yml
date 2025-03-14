@@ -20,19 +20,19 @@ databaseChangeLog:
                     primaryKey: true
               - column:
                   name: name
-                  type: varchar(100)
+                  type: VARCHAR(100)
               - column:
                   name: date_of_birth
-                  type: timestamp(6)
+                  type: DATE
               - column:
                   name: passport
-                  type: varchar(50)
+                  type: VARCHAR(50)
               - column:
                   name: phone_number
-                  type: varchar(100)
+                  type: VARCHAR(100)
               - column:
                   name: created_date
-                  type: timestamp(6)
+                  type: TIMESTAMP
               - column:
                   name: updated_date
-                  type: timestamp(6)
+                  type: TIMESTAMP

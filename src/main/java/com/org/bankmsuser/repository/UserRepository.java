@@ -2,19 +2,22 @@ package com.org.bankmsuser.repository;
 
 import com.org.bankmsuser.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User updateUserById(Long id, User user);
 
-    void deleteUserById(Long id);
 
     User findUserByPassport(String passport);
+    User findUserByPhoneNumber(String phoneNumber);
 
-    List<User> findByRegistrationDateBetween(LocalDate from, LocalDate to);
+    List<User> findUsersByCreatedDateBetween(LocalDateTime from, LocalDateTime to);
 
-    Optional<User> findByPhone(String phone);
+    List<User> findUsersByPassportContaining(String passportMask);
+    List<User> findUsersByPhoneNumberContaining(String phoneMask);
+
+
 }

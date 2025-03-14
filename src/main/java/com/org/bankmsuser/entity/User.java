@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +20,7 @@ public class User {
     private String name;
 
     @Column
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column
     private String passport;
