@@ -72,13 +72,14 @@ public class UserController {
     public ResponseEntity<List<UserDto>> filterUsersByDate(@RequestParam LocalDate from, @RequestParam LocalDate to) {
         return ResponseEntity.ok(userService.filterUsersByDate(from, to));
     }
-
+//-----------------------------------------------------------
     // обновляю номер телефона
     // МНЕ КАЖЕТСЯ - ЭТО ИЗБЫТОЧНО (есть метод patch выше)
 //    @PatchMapping("/{id}/phone")
 //    public ResponseEntity<UserDto> updatePhoneNumber(@PathVariable Long id, @RequestParam String phone) {
 //        return ResponseEntity.ok(userService.updatePhoneNumber(id, phone));
-//    }
+//-----------------------------------------------------------
+
 
     // получаем пользователя по паспорту
     @PatchMapping("/{id}/by-passport")

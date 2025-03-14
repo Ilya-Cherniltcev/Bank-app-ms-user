@@ -9,6 +9,7 @@ import com.org.bankmsuser.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
@@ -94,6 +95,10 @@ public class UserService {
     }
 
     public UserDto getUserByPhone(String phone) {
+        return userMapper.toUserDto(
+                userRepository.findByPhone(phone)
+                        .orElseThrow(() -> new UserNotFoundException())
+        );
     }
 
     public List<UserDto> filterUsersByDate(LocalDate from, LocalDate to) {
@@ -102,8 +107,18 @@ public class UserService {
         );
     }
 
-    public UserDto updatePhoneNumber(Long id, String phone) {
-    }
+    //----------------избыточно, но пока оставим---------------
+//    @Transactional
+//    public UserDto updatePhoneNumber(Long id, String phone) {
+//        Optional<User> optionalUser = userRepository.findById(id);
+//        if (!optionalUser.isPresent()) {
+//            throw new UserNotFoundException("User with ID " + id + " not found");
+//        }
+//        User user = optionalUser.get();
+//        user.setPhoneNumber(phone);
+//        user.setUpdatedDate(LocalDateTime.now());
+//        return userMapper.toUserDto(userRepository.save(user));
+//----------------------------------------------------------------------
 
 
     /**
