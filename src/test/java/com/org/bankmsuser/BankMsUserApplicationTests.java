@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -182,16 +183,13 @@ class BankMsUserApplicationTests {
     // Testing of getAllUsers method ---
     @Test
     void shouldReturnListOfUsersWhenValidPageAndSizeProvided() {
-        // Arrange
         User user = new User();
         UserDto userDto = new UserDto();
         when(userRepository.findAll()).thenReturn(List.of(user));
         when(userMapper.toUserDto(user)).thenReturn(userDto);
 
-        // Act
         List<UserDto> result = userService.getAllUsers(0, 5);
 
-        // Assert
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
         verify(userRepository, times(1)).findAll();
@@ -210,17 +208,14 @@ class BankMsUserApplicationTests {
     // Testing of getUserByPhone method ---
     @Test
     void shouldReturnUserDtoWhenUserExists() {
-        // Arrange
         String phone = "123456789";
         User user = new User();
         UserDto userDto = new UserDto();
         when(userRepository.findUserByPhoneNumber(phone)).thenReturn(user);
         when(userMapper.toUserDto(user)).thenReturn(userDto);
 
-        // Act
         UserDto result = userService.getUserByPhone(phone);
 
-        // Assert
         assertNotNull(result);
         verify(userRepository, times(1)).findUserByPhoneNumber(phone);
     }
@@ -236,6 +231,33 @@ class BankMsUserApplicationTests {
     @Test
     void shouldThrowExceptionWhenPhoneIsNull() {
         assertThrows(IncorrectInputDataException.class, () -> userService.getUserByPhone(null));
+    }
+
+    // Testing of filterUsersByDate method ---
+    @Test
+    void shouldReturnListOfUsersWhenValidDatesProvided() {
+        LocalDateTime from = LocalDateTime.now().minusDays(10);
+        LocalDateTime to = LocalDateTime.now();
+        User user = new User();
+        UserDto userDto = new UserDto();
+        when(userRepository.findUsersByCreatedDateBetween(from, to)).thenReturn(List.of(user));
+        when(userMapper.toUserDtoList(List.of(user))).thenReturn(List.of(userDto));
+
+        List<UserDto> result = userService.filterUsersByDate(from, to);
+
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        verify(userRepository, times(1)).findUsersByCreatedDateBetween(from, to);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenFromIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(null, LocalDateTime.now()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenToIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
     }
 
 }
