@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import com.org.bankmsuser.exception.IncorrectInputDataException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -180,7 +181,7 @@ class BankMsUserApplicationTests {
 
     // Testing of getAllUsers method ---
     @Test
-    void shouldReturnListOfUsers_whenValidPageAndSizeProvided() {
+    void shouldReturnListOfUsersWhenValidPageAndSizeProvided() {
         // Arrange
         User user = new User();
         UserDto userDto = new UserDto();
@@ -197,14 +198,44 @@ class BankMsUserApplicationTests {
     }
 
     @Test
-    void getAllUsers_shouldThrowException_whenPageIsNull() {
+    void shouldThrowExceptionWhenPageIsNull() {
         assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(null, 5));
     }
 
     @Test
-    void getAllUsers_shouldThrowException_whenSizeIsNull() {
+    void shouldThrowExceptionWhenSizeIsNull() {
         assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(0, null));
     }
 
+    // Testing of getUserByPhone method ---
+    @Test
+    void shouldReturnUserDtoWhenUserExists() {
+        // Arrange
+        String phone = "123456789";
+        User user = new User();
+        UserDto userDto = new UserDto();
+        when(userRepository.findUserByPhoneNumber(phone)).thenReturn(user);
+        when(userMapper.toUserDto(user)).thenReturn(userDto);
+
+        // Act
+        UserDto result = userService.getUserByPhone(phone);
+
+        // Assert
+        assertNotNull(result);
+        verify(userRepository, times(1)).findUserByPhoneNumber(phone);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserDoesNotExist() {
+        String phone = "123456789";
+        when(userRepository.findUserByPhoneNumber(phone)).thenReturn(null);
+
+        assertThrows(UserNotFoundException.class, () -> userService.getUserByPhone(phone));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPhoneIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.getUserByPhone(null));
+    }
 
 }
