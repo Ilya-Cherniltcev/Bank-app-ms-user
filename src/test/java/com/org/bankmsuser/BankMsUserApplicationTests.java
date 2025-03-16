@@ -259,5 +259,6 @@ class BankMsUserApplicationTests {
     void shouldThrowExceptionWhenToIsNull() {
         assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
     }
+    //думаю
 
 }
