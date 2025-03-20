@@ -7,7 +7,7 @@ import com.org.bankmsuser.entity.User;
 import com.org.bankmsuser.exception.ServiceException;
 import com.org.bankmsuser.mapper.UserMapper;
 import com.org.bankmsuser.repository.UserRepository;
-import com.org.bankmsuser.service.UserService;
+import com.org.bankmsuser.service.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import java.util.Optional;
 @Import(TestLiquibaseConfig.class)
 class BankMsUserApplicationTests {
     @InjectMocks
-    UserService userService;
+    UserServiceImpl userService;
     @Mock
     UserMapper userMapper;
     @Mock
