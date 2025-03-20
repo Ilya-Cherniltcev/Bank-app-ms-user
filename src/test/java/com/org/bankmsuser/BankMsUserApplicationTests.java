@@ -4,12 +4,10 @@ import com.org.bankmsuser.configuration.TestLiquibaseConfig;
 import com.org.bankmsuser.dto.UserCreateDto;
 import com.org.bankmsuser.dto.UserDto;
 import com.org.bankmsuser.entity.User;
-import com.org.bankmsuser.exception.DataExistException;
-import com.org.bankmsuser.exception.IncorrectInputDataException;
-import com.org.bankmsuser.exception.UserNotFoundException;
+import com.org.bankmsuser.exception.ServiceException;
 import com.org.bankmsuser.mapper.UserMapper;
 import com.org.bankmsuser.repository.UserRepository;
-import com.org.bankmsuser.service.UserService;
+import com.org.bankmsuser.service.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +28,7 @@ import java.util.Optional;
 @Import(TestLiquibaseConfig.class)
 class BankMsUserApplicationTests {
     @InjectMocks
-    UserService userService;
+    UserServiceImpl userService;
     @Mock
     UserMapper userMapper;
     @Mock
@@ -54,7 +52,7 @@ class BankMsUserApplicationTests {
     // Testing of createUser method ---
     @Test
     void shouldThrowExceptionWhenCreatingUserWithNullInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.createUser(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.createUser(null));
     }
 
     @Test
@@ -68,7 +66,7 @@ class BankMsUserApplicationTests {
     // Testing of getUserById method ---
     @Test
     void shouldThrowExceptionWhenGetUserByIdWithNullInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.getUserById(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.getUserById(null));
     }
 
     @Test
@@ -81,14 +79,14 @@ class BankMsUserApplicationTests {
 
     @Test
     void shouldThrowExceptionWhenGetUserByIdAndUserNotFound() {
-        when(userRepository.findById(any())).thenThrow(UserNotFoundException.class);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
+        when(userRepository.findById(any())).thenThrow(ServiceException.class);
+        Assertions.assertThrows(ServiceException.class, () -> userService.getUserById(1L));
     }
 
     // Testing of updateUser method ---
     @Test
     void shouldThrowExceptionWhenUpdateUserWithNullIdInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.updateUser(null, "", "", ""));
+        Assertions.assertThrows(ServiceException.class, () -> userService.updateUser(null, "", "", ""));
     }
 
     @Test
@@ -97,7 +95,7 @@ class BankMsUserApplicationTests {
         updateUserTest.setPassport("1");
         when(userRepository.findById(any())).thenReturn(Optional.of(testUser));
         when(userRepository.findUserByPassport(any())).thenReturn(updateUserTest);
-        Assertions.assertThrows(DataExistException.class, () -> userService.updateUser(1L, "", "1", ""));
+        Assertions.assertThrows(ServiceException.class, () -> userService.updateUser(1L, "", "1", ""));
     }
 
     @Test
@@ -106,7 +104,7 @@ class BankMsUserApplicationTests {
         updateUserTest.setPhoneNumber("55555");
         when(userRepository.findById(any())).thenReturn(Optional.of(testUser));
         when(userRepository.findUserByPhoneNumber(any())).thenReturn(updateUserTest);
-        Assertions.assertThrows(DataExistException.class, () -> userService.updateUser(1L, "", "", "55555"));
+        Assertions.assertThrows(ServiceException.class, () -> userService.updateUser(1L, "", "", "55555"));
     }
 
     @Test
@@ -120,19 +118,19 @@ class BankMsUserApplicationTests {
     // Testing of deleteUser method ---
     @Test
     void shouldThrowExceptionWhenDeleteUserWithNullIdInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.deleteUser(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.deleteUser(null));
     }
 
     // Testing of findUsersByPassportMask method ---
     @Test
     void shouldThrowExceptionWhenFindUsersByPassportMaskWithNullIdInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.findUsersByPassportMask(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.findUsersByPassportMask(null));
     }
 
     @Test
     void shouldThrowExceptionWhenFindUsersByPassportMaskAndUsersAreNotFound() {
         when(userRepository.findUsersByPassportContaining(any())).thenReturn(null);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUsersByPassportMask("111"));
+        Assertions.assertThrows(ServiceException.class, () -> userService.findUsersByPassportMask("111"));
     }
 
     @Test
@@ -147,13 +145,13 @@ class BankMsUserApplicationTests {
     // Testing of findUsersByPhoneMask method ---
     @Test
     void shouldThrowExceptionWhenFindUsersByPhoneMaskWithNullIdInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.findUsersByPhoneMask(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.findUsersByPhoneMask(null));
     }
 
     @Test
     void shouldThrowExceptionWhenFindUsersByPhoneMaskAndUsersAreNotFound() {
         when(userRepository.findUsersByPhoneNumberContaining(any())).thenReturn(null);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.findUsersByPhoneMask("111"));
+        Assertions.assertThrows(ServiceException.class, () -> userService.findUsersByPhoneMask("111"));
     }
 
     @Test
@@ -168,13 +166,13 @@ class BankMsUserApplicationTests {
     // Testing of getByPassport method ---
     @Test
     void shouldThrowExceptionWhenGetByPassportWithNullIdInput() {
-        Assertions.assertThrows(IncorrectInputDataException.class, () -> userService.getByPassport(null));
+        Assertions.assertThrows(ServiceException.class, () -> userService.getByPassport(null));
     }
 
     @Test
     void shouldThrowExceptionWhenGetByPassportAndUsersAreNotFound() {
         when(userRepository.findUserByPassport(any())).thenReturn(null);
-        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getByPassport("111"));
+        Assertions.assertThrows(ServiceException.class, () -> userService.getByPassport("111"));
     }
 
 
