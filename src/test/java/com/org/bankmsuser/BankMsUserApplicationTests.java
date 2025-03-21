@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import com.org.bankmsuser.exception.IncorrectInputDataException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -195,12 +194,12 @@ class BankMsUserApplicationTests {
 
     @Test
     void shouldThrowExceptionWhenPageIsNull() {
-        assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(null, 5));
+        assertThrows(ServiceException.class, () -> userService.getAllUsers(null, 5));
     }
 
     @Test
     void shouldThrowExceptionWhenSizeIsNull() {
-        assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(0, null));
+        assertThrows(ServiceException.class, () -> userService.getAllUsers(0, null));
     }
 
     // Testing of getUserByPhone method ---
@@ -223,12 +222,12 @@ class BankMsUserApplicationTests {
         String phone = "123456789";
         when(userRepository.findUserByPhoneNumber(phone)).thenReturn(null);
 
-        assertThrows(UserNotFoundException.class, () -> userService.getUserByPhone(phone));
+        assertThrows(ServiceException.class, () -> userService.getUserByPhone(phone));
     }
 
     @Test
     void shouldThrowExceptionWhenPhoneIsNull() {
-        assertThrows(IncorrectInputDataException.class, () -> userService.getUserByPhone(null));
+        assertThrows(ServiceException.class, () -> userService.getUserByPhone(null));
     }
 
     // Testing of filterUsersByDate method ---
@@ -250,12 +249,12 @@ class BankMsUserApplicationTests {
 
     @Test
     void shouldThrowExceptionWhenFromIsNull() {
-        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(null, LocalDateTime.now()));
+        assertThrows(ServiceException.class, () -> userService.filterUsersByDate(null, LocalDateTime.now()));
     }
 
     @Test
     void shouldThrowExceptionWhenToIsNull() {
-        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
+        assertThrows(ServiceException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
     }
     //думаю
 
