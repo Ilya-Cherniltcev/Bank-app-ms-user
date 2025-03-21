@@ -2,24 +2,21 @@ package com.org.bankmsuser.controller;
 
 import com.org.bankmsuser.dto.UserCreateDto;
 import com.org.bankmsuser.dto.UserDto;
-import com.org.bankmsuser.entity.User;
-import com.org.bankmsuser.service.UserService;
+import com.org.bankmsuser.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     // получаю юзера по айди
     @GetMapping("/{id}")
