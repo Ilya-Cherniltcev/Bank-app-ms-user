@@ -15,11 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import com.org.bankmsuser.exception.IncorrectInputDataException;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +63,7 @@ class BankMsUserApplicationTests {
         when(userRepository.save(any())).thenReturn(testUser);
         when(userMapper.toUserEntity(testUserCreateDto)).thenReturn(testUser);
         when(userMapper.toUserDto(any())).thenReturn(testUserDto);
-        Assertions.assertEquals(testUserDto, userService.createUser(testUserCreateDto));
+        assertEquals(testUserDto, userService.createUser(testUserCreateDto));
     }
 
     // Testing of getUserById method ---
@@ -74,7 +77,7 @@ class BankMsUserApplicationTests {
         Optional<User> testUserOptional = Optional.of(testUser);
         when(userRepository.findById(any())).thenReturn(testUserOptional);
         when(userMapper.toUserDto(any())).thenReturn(testUserDto);
-        Assertions.assertEquals(testUserDto, userService.getUserById(1L));
+        assertEquals(testUserDto, userService.getUserById(1L));
     }
 
     @Test
@@ -112,7 +115,7 @@ class BankMsUserApplicationTests {
         when(userRepository.findById(any())).thenReturn(Optional.of(testUser));
         when(userRepository.findUserByPhoneNumber(any())).thenReturn(testUser);
         when(userMapper.toUserDto(any())).thenReturn(testUserDto);
-        Assertions.assertEquals(testUserDto, userService.updateUser(1L, "", "", ""));
+        assertEquals(testUserDto, userService.updateUser(1L, "", "", ""));
     }
 
     // Testing of deleteUser method ---
@@ -139,7 +142,7 @@ class BankMsUserApplicationTests {
         List<UserCreateDto> testUserCreateDtoList = new ArrayList<>(List.of(testUserCreateDto));
         when(userRepository.findUsersByPassportContaining(any())).thenReturn(testUserList);
         when(userMapper.toUserCreateDtoList(any())).thenReturn(testUserCreateDtoList);
-        Assertions.assertEquals(testUserCreateDtoList, userService.findUsersByPassportMask("111"));
+        assertEquals(testUserCreateDtoList, userService.findUsersByPassportMask("111"));
     }
 
     // Testing of findUsersByPhoneMask method ---
@@ -160,7 +163,7 @@ class BankMsUserApplicationTests {
         List<UserDto> testUserDtoList = new ArrayList<>(List.of(testUserDto));
         when(userRepository.findUsersByPhoneNumberContaining(any())).thenReturn(testUserList);
         when(userMapper.toUserDtoList(any())).thenReturn(testUserDtoList);
-        Assertions.assertEquals(testUserDtoList, userService.findUsersByPhoneMask("111"));
+        assertEquals(testUserDtoList, userService.findUsersByPhoneMask("111"));
     }
 
     // Testing of getByPassport method ---
@@ -175,5 +178,85 @@ class BankMsUserApplicationTests {
         Assertions.assertThrows(ServiceException.class, () -> userService.getByPassport("111"));
     }
 
+    // Testing of getAllUsers method ---
+    @Test
+    void shouldReturnListOfUsersWhenValidPageAndSizeProvided() {
+        User user = new User();
+        UserDto userDto = new UserDto();
+        when(userRepository.findAll()).thenReturn(List.of(user));
+        when(userMapper.toUserDto(user)).thenReturn(userDto);
+
+        List<UserDto> result = userService.getAllUsers(0, 5);
+
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPageIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(null, 5));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSizeIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.getAllUsers(0, null));
+    }
+
+    // Testing of getUserByPhone method ---
+    @Test
+    void shouldReturnUserDtoWhenUserExists() {
+        String phone = "123456789";
+        User user = new User();
+        UserDto userDto = new UserDto();
+        when(userRepository.findUserByPhoneNumber(phone)).thenReturn(user);
+        when(userMapper.toUserDto(user)).thenReturn(userDto);
+
+        UserDto result = userService.getUserByPhone(phone);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findUserByPhoneNumber(phone);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserDoesNotExist() {
+        String phone = "123456789";
+        when(userRepository.findUserByPhoneNumber(phone)).thenReturn(null);
+
+        assertThrows(UserNotFoundException.class, () -> userService.getUserByPhone(phone));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPhoneIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.getUserByPhone(null));
+    }
+
+    // Testing of filterUsersByDate method ---
+    @Test
+    void shouldReturnListOfUsersWhenValidDatesProvided() {
+        LocalDateTime from = LocalDateTime.now().minusDays(10);
+        LocalDateTime to = LocalDateTime.now();
+        User user = new User();
+        UserDto userDto = new UserDto();
+        when(userRepository.findUsersByCreatedDateBetween(from, to)).thenReturn(List.of(user));
+        when(userMapper.toUserDtoList(List.of(user))).thenReturn(List.of(userDto));
+
+        List<UserDto> result = userService.filterUsersByDate(from, to);
+
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        verify(userRepository, times(1)).findUsersByCreatedDateBetween(from, to);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenFromIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(null, LocalDateTime.now()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenToIsNull() {
+        assertThrows(IncorrectInputDataException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
+    }
+    //думаю
 
 }
