@@ -22,9 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @SpringBootTest
 @Import(TestLiquibaseConfig.class)
@@ -177,29 +175,52 @@ class BankMsUserApplicationTests {
         Assertions.assertThrows(ServiceException.class, () -> userService.getByPassport("111"));
     }
 
+    // Testing of getAllUsers method ---Тест с пагинацией, если будет много юзеров поможет избежать нагрузку на сервер---
+//    @Test
+//    void shouldReturnListOfUsersWhenValidPageAndSizeProvided() {
+//        User user = new User();
+//        UserDto userDto = new UserDto();
+//        when(userRepository.findAll()).thenReturn(List.of(user));
+//        when(userMapper.toUserDto(user)).thenReturn(userDto);
+//
+//        List<UserDto> result = userService.getAllUsers(0, 5);
+//
+//        assertFalse(result.isEmpty());
+//        assertEquals(1, result.size());
+//        verify(userRepository, times(1)).findAll();
+//    }
+//
+//    @Test
+//    void shouldThrowExceptionWhenPageIsNull() {
+//        assertThrows(ServiceException.class, () -> userService.getAllUsers(null, 5));
+//    }
+//
+//    @Test
+//    void shouldThrowExceptionWhenSizeIsNull() {
+//        assertThrows(ServiceException.class, () -> userService.getAllUsers(0, null));
+//    }
+
     // Testing of getAllUsers method ---
     @Test
-    void shouldReturnListOfUsersWhenValidPageAndSizeProvided() {
-        User user = new User();
-        UserDto userDto = new UserDto();
-        when(userRepository.findAll()).thenReturn(List.of(user));
-        when(userMapper.toUserDto(user)).thenReturn(userDto);
-
-        List<UserDto> result = userService.getAllUsers(0, 5);
-
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        verify(userRepository, times(1)).findAll();
+    void shouldReturnListOfUserDto(){
+        List<User> testUserList = new ArrayList<>(List.of(testUser));
+        List<UserDto> testUserDtoList = new ArrayList<>(List.of(testUserDto));
+        when(userRepository.findAll()).thenReturn(testUserList);
+        when(userMapper.toUserDtoList(any())).thenReturn(testUserDtoList);
+        List<UserDto> result = userService.getAllUsers();
+        assertEquals(testUserDtoList, result);
     }
 
     @Test
-    void shouldThrowExceptionWhenPageIsNull() {
-        assertThrows(ServiceException.class, () -> userService.getAllUsers(null, 5));
+    void shouldThrowExceptionWhenUserListIsNull(){
+        when(userRepository.findAll()).thenReturn(null);
+        Assertions.assertThrows(ServiceException.class, () -> userService.getAllUsers());
     }
 
     @Test
-    void shouldThrowExceptionWhenSizeIsNull() {
-        assertThrows(ServiceException.class, () -> userService.getAllUsers(0, null));
+    void shouldThrowExceptionWhenUserIsEmpty(){
+        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        Assertions.assertThrows(ServiceException.class, () -> userService.getAllUsers());
     }
 
     // Testing of getUserByPhone method ---
