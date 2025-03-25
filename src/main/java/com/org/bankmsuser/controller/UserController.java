@@ -49,8 +49,8 @@ public class UserController {
 
     // получаю список всех юзеров
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
-        return ResponseEntity.ok(userService.getAllUsers(page, size));
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     // поиск по номеру телефона

@@ -114,21 +114,17 @@ public class UserServiceImpl implements UserService {
     /**
      * Get all users
      *
-     * @param page number of page
-     * @param size page's size
      * @return List<UserDto>
      * @throws ServiceException when input data is null (ErrorCode.INPUT_DATA_NOT_VALID)
      */
-    public List<UserDto> getAllUsers(Integer page, Integer size) {
-        if (page == null) {
-            throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
+    public List<UserDto> getAllUsers() {
+
+        List<User> users = userRepository.findAll();
+
+        if (users == null || users.isEmpty()) {
+            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
         }
-        if (size == null) {
-            throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
-        }
-        return userRepository.findAll(PageRequest.of(page, size))
-                .map(userMapper::toUserDto)
-                .getContent();
+        return userMapper.toUserDtoList(users);
     }
 
     /**
@@ -159,15 +155,17 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException when input data is null (ErrorCode.INPUT_DATA_NOT_VALID)
      */
     public List<UserDto> filterUsersByDate(LocalDateTime from, LocalDateTime to) {
-        if (from == null) {
+        if (from == null || to == null) {
             throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
         }
-        if (to == null) {
-            throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
+
+        List<User> usersByDate = userRepository.findUsersByCreatedDateBetween(from, to);
+
+        if (usersByDate.isEmpty()) {
+            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
         }
-        return userMapper.toUserDtoList(
-                userRepository.findUsersByCreatedDateBetween(from, to)
-        );
+
+        return userMapper.toUserDtoList(usersByDate);
     }
 
     /**
