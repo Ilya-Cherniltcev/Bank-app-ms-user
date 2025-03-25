@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepository.findAll();
 
-        if (users == null || users.isEmpty()) {
+        if (users.isEmpty()) {
             throw new ServiceException(ErrorCode.USER_NOT_FOUND);
         }
         return userMapper.toUserDtoList(users);

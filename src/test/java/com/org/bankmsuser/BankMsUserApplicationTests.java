@@ -211,11 +211,11 @@ class BankMsUserApplicationTests {
         assertEquals(testUserDtoList, result);
     }
 
-    @Test
-    void shouldThrowExceptionWhenUserListIsNull(){
-        when(userRepository.findAll()).thenReturn(null);
-        Assertions.assertThrows(ServiceException.class, () -> userService.getAllUsers());
-    }
+//    @Test
+//    void shouldThrowExceptionWhenUserListIsEmpty(){
+//        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+//        Assertions.assertThrows(ServiceException.class, () -> userService.getAllUsers());
+//    }
 
     @Test
     void shouldThrowExceptionWhenUserIsEmpty(){
@@ -227,8 +227,10 @@ class BankMsUserApplicationTests {
     @Test
     void shouldReturnUserDtoWhenUserExists() {
         String phone = "123456789";
-        User user = new User();
-        UserDto userDto = new UserDto();
+//        User user = new User();
+//        UserDto userDto = new UserDto();
+        User user =testUser;
+        UserDto userDto = testUserDto;
         when(userRepository.findUserByPhoneNumber(phone)).thenReturn(user);
         when(userMapper.toUserDto(user)).thenReturn(userDto);
 
