@@ -155,15 +155,17 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException when input data is null (ErrorCode.INPUT_DATA_NOT_VALID)
      */
     public List<UserDto> filterUsersByDate(LocalDateTime from, LocalDateTime to) {
-        if (from == null) {
+        if (from == null || to == null) {
             throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
         }
-        if (to == null) {
-            throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
+
+        List<User> usersByDate = userRepository.findUsersByCreatedDateBetween(from, to);
+
+        if (usersByDate.isEmpty()) {
+            throw new ServiceException(ErrorCode.USER_NOT_FOUND);
         }
-        return userMapper.toUserDtoList(
-                userRepository.findUsersByCreatedDateBetween(from, to)
-        );
+
+        return userMapper.toUserDtoList(usersByDate);
     }
 
     /**

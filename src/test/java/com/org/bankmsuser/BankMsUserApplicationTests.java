@@ -277,6 +277,10 @@ class BankMsUserApplicationTests {
     void shouldThrowExceptionWhenToIsNull() {
         assertThrows(ServiceException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
     }
-    //думаю
 
+    @Test
+    void shouldThrowExceptionWhenListUsersIsEmpty() {
+        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        Assertions.assertThrows(ServiceException.class, () -> userService.filterUsersByDate(LocalDateTime.now(), null));
+    }
 }
