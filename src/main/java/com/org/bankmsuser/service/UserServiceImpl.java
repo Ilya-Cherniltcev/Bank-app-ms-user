@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,18 +77,22 @@ public class UserServiceImpl implements UserService {
             user.setName(name);
         }
         // check passport
-        if (passport != null && !user.getPassport().equals(passport)) {
-            User tempUser = userRepository.findUserByPassport(passport);
-            if (tempUser != null && tempUser.getPassport().equals(passport)) {
-                throw new ServiceException(ErrorCode.USER_EXISTS);
+        if (passport != null) {
+            if (user.getPassport() != null && !user.getPassport().equals(passport)) {
+                User tempUser = userRepository.findUserByPassport(passport);
+                if (tempUser != null && tempUser.getPassport().equals(passport)) {
+                    throw new ServiceException(ErrorCode.USER_EXISTS);
+                }
             }
             user.setPassport(passport);
         }
         // check phone number
-        if (phoneNumber != null && !user.getPhoneNumber().equals(phoneNumber)) {
-            User tempUser = userRepository.findUserByPhoneNumber(phoneNumber);
-            if (tempUser != null && tempUser.getPhoneNumber().equals(phoneNumber)) {
-                throw new ServiceException(ErrorCode.USER_EXISTS);
+        if (phoneNumber != null) {
+            if (user.getPhoneNumber() != null && !user.getPhoneNumber().equals(phoneNumber)) {
+                User tempUser = userRepository.findUserByPhoneNumber(phoneNumber);
+                if (tempUser != null && tempUser.getPhoneNumber().equals(phoneNumber)) {
+                    throw new ServiceException(ErrorCode.USER_EXISTS);
+                }
             }
             user.setPhoneNumber(phoneNumber);
         }
