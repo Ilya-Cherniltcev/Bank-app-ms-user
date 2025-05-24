@@ -109,9 +109,6 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException when user doesn't exist (ErrorCode.USER_NOT_FOUND)
      */
     public void deleteUser(Long id) {
-        if (id == null) {
-            throw new ServiceException(ErrorCode.INPUT_DATA_NOT_VALID);
-        }
         getUserById(id);
         userRepository.deleteById(id);
     }
@@ -123,9 +120,7 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException when input data is null (ErrorCode.INPUT_DATA_NOT_VALID)
      */
     public List<UserDto> getAllUsers() {
-
         List<User> users = userRepository.findAll();
-
         if (users.isEmpty()) {
             throw new ServiceException(ErrorCode.USER_NOT_FOUND);
         }

@@ -15,7 +15,6 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    //List<UserDto> getAllUsers(Integer page, Integer size);
     List<UserDto> getAllUsers();
 
     UserDto getUserByPhone(String phone);
