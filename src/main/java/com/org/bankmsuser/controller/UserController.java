@@ -58,7 +58,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByPhone(phoneNumber));
     }
 
-    // filter users by date's registration
+    // find users by date's registration
     @GetMapping("/filter/by-reg-date/")
     public ResponseEntity<List<UserDto>> filterUsersByDateOfRegistration(@RequestParam(name = "dateTimeFrom") LocalDateTime from, @RequestParam(name = "dateTimeTo") LocalDateTime to) {
         return ResponseEntity.ok(userService.filterUsersByDate(from, to));
